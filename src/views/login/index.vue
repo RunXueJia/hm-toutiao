@@ -41,6 +41,7 @@
 
 <script>
 	import { sendSms, loginIn } from "@/api/login.js";
+	import { mapMutations } from "vuex";
 	export default {
 		name: "HmToutiaoIndex",
 
@@ -71,6 +72,7 @@
 		mounted() {},
 
 		methods: {
+			...mapMutations(["setUser"]),
 			onClickLeft() {
 				// Toast("返回");
 				this.$router.go(-1);
@@ -84,8 +86,13 @@
 					duration: 0,
 				});
 				try {
-					const res = await loginIn(this.user);
-					console.log(res);
+					const { data } = await loginIn(this.user);
+					console.log(data);
+
+					this.$toast.success("登录成功");
+					//数据存到vuex和本地
+					this.setUser(data.data);
+					this.$router.push("/my");
 				} catch (error) {
 					// console.log(error);
 					this.$toast(error.response.data.message);
