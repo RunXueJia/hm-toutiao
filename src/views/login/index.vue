@@ -88,7 +88,6 @@
 				try {
 					const { data } = await loginIn(this.user);
 					console.log(data);
-
 					this.$toast.success("登录成功");
 					//数据存到vuex和本地
 					this.setUser(data.data);
@@ -121,7 +120,7 @@
 			finsh(time) {
 				// console.log(time);
 				const { seconds } = time;
-				if (seconds === 0) return (this.showCount = true);
+				if (!seconds) return (this.showCount = true);
 			},
 		},
 	};
