@@ -8,6 +8,7 @@ export default new Vuex.Store({
     user: getItem(userKey) || {}
   },
   getters: {
+    token: (state) => state.user.token
   },
   mutations: {
     setUser(state, data) {

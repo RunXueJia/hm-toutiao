@@ -14,9 +14,4 @@
 </script>
 
 <style scoped lang="less">
-	.box1 {
-		width: 200px;
-		height: 200px;
-		background-color: pink;
-	}
 </style>
