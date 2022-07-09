@@ -91,6 +91,9 @@
 					this.$toast.success("登录成功");
 					//数据存到vuex和本地
 					this.setUser(data.data);
+					const url = this.$route.query.url;
+					// console.log(url);
+					if (url) return this.$router.replace(url);
 					this.$router.push("/my");
 				} catch (error) {
 					// console.log(error);

@@ -43,8 +43,20 @@
 		</div>
 		<!-- 二宫格 -->
 		<van-grid :column-num="2" class="grid-nav" clickable>
-			<van-grid-item class="grid-item" icon-prefix="toutiao" icon="shoucang" text="收藏" />
-			<van-grid-item class="grid-item" icon-prefix="toutiao" icon="lishi" text="历史" />
+			<van-grid-item
+				@click="$router.push('/my/collect')"
+				class="grid-item"
+				icon-prefix="toutiao"
+				icon="shoucang"
+				text="收藏"
+			/>
+			<van-grid-item
+				@click="$router.push('/my/history')"
+				class="grid-item"
+				icon-prefix="toutiao"
+				icon="lishi"
+				text="历史"
+			/>
 		</van-grid>
 		<!-- 链接 -->
 		<van-cell-group>
@@ -81,7 +93,9 @@
 					console.log(data);
 					this.userInfo = data.data;
 				} catch (error) {
-					console.log(error);
+					// console.log(error);
+					this.$toast.fail("登陆已过期,请重新登录");
+					this.$router.push("/login");
 				}
 			},
 			//退出
