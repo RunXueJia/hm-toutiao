@@ -94,7 +94,7 @@
 					const url = this.$route.query.url;
 					// console.log(url);
 					if (url) return this.$router.replace(url);
-					this.$router.push("/my");
+					this.$router.replace("/my");
 				} catch (error) {
 					// console.log(error);
 					this.$toast(error.response.data.message);

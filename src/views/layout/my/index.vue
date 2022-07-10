@@ -95,7 +95,7 @@
 				} catch (error) {
 					// console.log(error);
 					this.$toast.fail("登陆已过期,请重新登录");
-					this.$router.push("/login");
+					this.setUser({});
 				}
 			},
 			//退出
