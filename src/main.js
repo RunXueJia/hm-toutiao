@@ -6,7 +6,8 @@ import './styles/index.less'
 import 'amfe-flexible'
 import '@/vants'
 Vue.config.productionTip = false
-
+import { getrelativeTime } from '@/utils/day'
+Vue.filter('getrelative', (time) => getrelativeTime(time))
 new Vue({
   router,
   store,

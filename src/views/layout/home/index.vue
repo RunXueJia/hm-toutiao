@@ -16,27 +16,40 @@
 				<!-- 占位元素 -->
 				<div class="placeholder"></div>
 				<!-- 右侧按钮 -->
-				<div class="hamburger-btn">
+				<div class="hamburger-btn" @click="editShow=true">
 					<i class="toutiao toutiao-gengduo"></i>
 				</div>
 			</template>
 		</van-tabs>
+		<!-- 频道编辑弹出层 -->
+		<van-popup
+			v-model="editShow"
+			closeable
+			close-icon-position="top-left"
+			position="bottom"
+			:style="{ height: '100%' }"
+		>
+			<ChannelEdit :userChannels="Channels" :activeIndex="active"></ChannelEdit>
+		</van-popup>
 	</div>
 </template>
 
 <script>
 	import ArticleList from "./components/index.vue";
+	import ChannelEdit from "./components/setEdit.vue";
 	import { getChannelsApi } from "@/api/home";
 	export default {
 		name: "HomeIndex",
 		components: {
 			ArticleList,
+			ChannelEdit,
 		},
 		props: {},
 		data() {
 			return {
 				active: 0,
 				Channels: [],
+				editShow: false,
 			};
 		},
 		computed: {},
@@ -50,7 +63,7 @@
 				try {
 					const { data } = await getChannelsApi();
 					this.Channels = data.data.channels;
-					console.log(data);
+					// console.log(data);
 				} catch (error) {
 					this.$toast.fail("获取频道列表失败");
 				}
