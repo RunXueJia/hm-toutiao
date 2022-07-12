@@ -29,7 +29,12 @@
 			position="bottom"
 			:style="{ height: '100%' }"
 		>
-			<ChannelEdit :userChannels="Channels" :activeIndex="active"></ChannelEdit>
+			<ChannelEdit
+				@changeIndex="changeIndex"
+				@changeTab="changeTab"
+				:userChannels="Channels"
+				:activeIndex="active"
+			></ChannelEdit>
 		</van-popup>
 	</div>
 </template>
@@ -38,6 +43,8 @@
 	import ArticleList from "./components/index.vue";
 	import ChannelEdit from "./components/setEdit.vue";
 	import { getChannelsApi } from "@/api/home";
+	import { mapGetters } from "vuex";
+	import { getItem } from "@/utils/storage";
 	export default {
 		name: "HomeIndex",
 		components: {
@@ -52,21 +59,44 @@
 				editShow: false,
 			};
 		},
-		computed: {},
+		computed: {
+			...mapGetters(["token"]),
+		},
 		watch: {},
 		created() {
 			this.initData();
 		},
 		mounted() {},
 		methods: {
+			//根据登陆状态获取频道
 			async initData() {
-				try {
-					const { data } = await getChannelsApi();
-					this.Channels = data.data.channels;
-					// console.log(data);
-				} catch (error) {
-					this.$toast.fail("获取频道列表失败");
+				if (this.token) {
+					try {
+						const { data } = await getChannelsApi();
+						this.Channels = data.data.channels;
+						// console.log(data);
+					} catch (error) {
+						this.$toast.fail("获取用户频道列表失败");
+					}
+				} else {
+					if (getItem("TOUTIAO-USERCHANNELS"))
+						return (this.Channels = getItem("TOUTIAO-USERCHANNELS"));
+					try {
+						const { data } = await getChannelsApi();
+						this.Channels = data.data.channels;
+					} catch (error) {
+						this.$toast.fail("获取用户频道列表失败");
+					}
 				}
+			},
+			//跳转tab
+			changeTab(index) {
+				this.active = index;
+				this.editShow = false;
+			},
+			//更新索引
+			changeIndex() {
+				this.active--;
 			},
 		},
 	};

@@ -13,7 +13,7 @@
 		</van-cell>
 		<van-grid class="my-grid" :gutter="10">
 			<van-grid-item
-				@click="delChanner(obj)"
+				@click="clickChanner(obj)"
 				v-for="obj in userChannels"
 				:key="obj.id"
 				class="grid-item"
@@ -46,7 +46,13 @@
 </template>
 
 <script>
-	import { getAllChannelsApi } from "@/api/home";
+	import {
+		getAllChannelsApi,
+		delUserChannelsApi,
+		setUserChannelsApi,
+	} from "@/api/home";
+	import { mapGetters } from "vuex";
+	import { setItem } from "@/utils/storage";
 	export default {
 		name: "ChannelEdit",
 		components: {},
@@ -68,6 +74,8 @@
 			};
 		},
 		computed: {
+			...mapGetters(["token"]),
+			//推荐频道
 			hotChannels() {
 				return this.AllChannels.filter(
 					(fa) => !this.userChannels.find((son) => son.id === fa.id)
@@ -92,18 +100,54 @@
 			//添加用户频道
 			addUserChannel(obj) {
 				if (this.changing) this.userChannels.push(obj);
+				if (this.token) {
+					// console.log("登陆");
+					try {
+						setUserChannelsApi({
+							channels: [
+								{
+									id: obj.id,
+									seq: this.userChannels.length - 1,
+								},
+							],
+						});
+					} catch (error) {
+						this.$toast.fail("同步失败");
+					}
+				} else {
+					// console.log("离线");
+					setItem("TOUTIAO-USERCHANNELS", this.userChannels);
+				}
 			},
 			//保存用户频道
 			setChannel() {
 				this.changing = !this.changing;
 			},
-			//删除用户频道
-			delChanner(obj) {
-				if (!this.changing || obj.name === "推荐") return;
-				this.userChannels.splice(
-					this.userChannels.findIndex((item) => item.id === obj.id),
-					1
-				);
+			//删除/切换用户频道
+			clickChanner(obj) {
+				const index = this.userChannels.findIndex((item) => item.id === obj.id);
+				if (this.changing && obj.name !== "推荐") {
+					this.userChannels.splice(index, 1);
+					this.delChannel(obj.id);
+					if (index <= this.activeIndex) this.$emit("changeIndex");
+				}
+				if (!this.changing) {
+					this.$emit("changeTab", index);
+				}
+			},
+			async delChannel(id) {
+				//删除保存
+				if (this.token) {
+					// console.log("登陆");
+					try {
+						await delUserChannelsApi(id);
+					} catch (error) {
+						this.$toast.fail("同步失败");
+					}
+				} else {
+					// console.log("离线");
+					setItem("TOUTIAO-USERCHANNELS", this.userChannels);
+				}
 			},
 		},
 	};

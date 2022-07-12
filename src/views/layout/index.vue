@@ -12,7 +12,8 @@
 </template>
 
 <script>
-	import { mapGetters } from "vuex";
+	import { mapGetters, mapMutations } from "vuex";
+	import { getUserInfo } from "@/api/User";
 
 	export default {
 		name: "layout",
@@ -22,10 +23,21 @@
 		data() {
 			return {};
 		},
-
+		created() {
+			this.initData();
+		},
 		mounted() {},
 
-		methods: {},
+		methods: {
+			...mapMutations(["setUser"]),
+			async initData() {
+				try {
+					await getUserInfo();
+				} catch (error) {
+					this.setUser({});
+				}
+			},
+		},
 	};
 </script>
 

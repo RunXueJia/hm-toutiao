@@ -12,6 +12,17 @@ export const getAllChannelsApi = (params) => requset({
     url: '/v1_0/channels',
     params
 })
-//获取所有频道
+
+export const setUserChannelsApi = (data) => requset({
+    method: 'patch',
+    url: '/v1_0/user/channels',
+    data
+})
+
+export const delUserChannelsApi = (id) => requset({
+    method: 'delete',
+    url: '/v1_0/user/channels/' + id,
+})
+///v1_0/user/channels
 ///v1_0/channels
 ///v1_0/user/channels

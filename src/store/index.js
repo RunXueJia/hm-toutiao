@@ -6,6 +6,7 @@ const userKey = 'TOUTIAO-USER'
 export default new Vuex.Store({
   state: {
     user: getItem(userKey) || {}
+
   },
   getters: {
     token: (state) => state.user.token

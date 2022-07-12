@@ -51,7 +51,7 @@
 						channel_id: this.channel.id,
 						timestamp: flag ? this.timestamp : +new Date(),
 					});
-					console.log(data);
+					// console.log(daa);
 					//测试加载错误
 					// if (Math.random() * 10 > 5) JSON.parse("aaa");
 					if (flag) {
