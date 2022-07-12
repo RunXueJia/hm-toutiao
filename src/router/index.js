@@ -47,7 +47,10 @@ const routes = [
   {
     path: '/login',
     component: () => import('@/views/login'),
-
+  },
+  {
+    path: '/search',
+    component: () => import('@/views/search'),
   }
 ]
 // 实例化路由对象
