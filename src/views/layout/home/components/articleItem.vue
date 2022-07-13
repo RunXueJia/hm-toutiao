@@ -1,7 +1,11 @@
 <template>
 	<div>
 		<!-- <p>{{item.title}}</p> -->
-		<van-cell :title="item.title" class="article-item">
+		<van-cell
+			@click="$router.push(`/article/${item.art_id}`)"
+			:title="item.title"
+			class="article-item"
+		>
 			<template #default v-if="item.cover.type ===1">
 				<van-image class="right-cover" fit="cover" :src="item.cover.images[0]" />
 			</template>
