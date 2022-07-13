@@ -1,6 +1,6 @@
 <template>
 	<div class="search-suggestion">
-		<van-cell v-for="(obj ,index ) in list" :key="index" icon="search">
+		<van-cell @click="$emit('search',obj)" v-for="(obj ,index ) in list" :key="index" icon="search">
 			<template #title>
 				<span v-html="renderStr(obj)"></span>
 			</template>
@@ -58,7 +58,7 @@
 						return (this.list = []);
 					this.list = data.data.options;
 				} catch (error) {
-					console.log(error);
+					// console.log(error);
 				}
 			},
 			//

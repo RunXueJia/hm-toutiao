@@ -33,8 +33,10 @@
 			async initData() {
 				try {
 					await getUserInfo();
+					console.log("登录状态正常");
 				} catch (error) {
 					this.setUser({});
+					console.log("登录状态异常");
 				}
 			},
 		},

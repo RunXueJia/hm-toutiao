@@ -1,21 +1,37 @@
 <template>
 	<div class="search-result">
-		<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-			<van-cell v-for="item in list" :key="item" :title="item" />
+		<van-list
+			:error.sync="error"
+			error-text="请求失败，点击重新加载"
+			v-model="loading"
+			:finished="finished"
+			finished-text="没有更多了"
+			@load="onLoad"
+		>
+			<van-cell v-for="item in list" :key="item.art_id" :title="item.title" />
 		</van-list>
 	</div>
 </template>
 
 <script>
+	import { getSearchrResApi } from "@/api/search";
 	export default {
 		name: "SearchResult",
 		components: {},
-		props: {},
+		props: {
+			searctText: {
+				type: String,
+				required: true,
+			},
+		},
 		data() {
 			return {
 				list: [],
 				loading: false,
 				finished: false,
+				page: 1,
+				per_page: 10,
+				error: false,
 			};
 		},
 		computed: {},
@@ -23,22 +39,21 @@
 		created() {},
 		mounted() {},
 		methods: {
-			onLoad() {
-				// 异步更新数据
-				// setTimeout 仅做示例，真实场景中一般为 ajax 请求
-				setTimeout(() => {
-					for (let i = 0; i < 10; i++) {
-						this.list.push(this.list.length + 1);
-					}
-
-					// 加载状态结束
+			async onLoad() {
+				try {
+					const { data } = await getSearchrResApi({
+						page: this.page,
+						per_page: this.per_page,
+						q: this.searctText,
+					});
+					this.page++;
+					this.list = [...this.list, ...data.data.results];
 					this.loading = false;
-
-					// 数据全部加载完成
-					if (this.list.length >= 40) {
-						this.finished = true;
-					}
-				}, 1000);
+					if (data.data.results.length < this.per_page) this.finished = true;
+				} catch (error) {
+					this.error = true;
+					this.loading = false;
+				}
 			},
 		},
 	};

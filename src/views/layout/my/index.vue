@@ -90,7 +90,7 @@
 			async initData() {
 				try {
 					const { data } = await getUserInfo();
-					console.log(data);
+					// console.log(data);
 					this.userInfo = data.data;
 				} catch (error) {
 					// console.log(error);

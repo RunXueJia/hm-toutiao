@@ -94,7 +94,7 @@
 					const { data } = await getAllChannelsApi();
 					// console.log(data);
 					this.AllChannels = data.data.channels;
-					console.log(this.AllChannels);
+					// console.log(this.AllChannels);
 				} catch (error) {}
 			},
 			//添加用户频道
