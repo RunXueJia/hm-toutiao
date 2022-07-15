@@ -6,13 +6,13 @@
 
 		<div class="main-wrap">
 			<!-- 加载中 -->
-			<div class="loading-wrap" v-if="isloadinding">
+			<div class="loading-wrap" v-if="isloadinding ===1">
 				<van-loading color="#3296fa" vertical>加载中</van-loading>
 			</div>
 			<!-- /加载中 -->
 
 			<!-- 加载完成-文章详情 -->
-			<div class="article-detail">
+			<div class="article-detail" v-if="isloadinding ===2">
 				<!-- 文章标题 -->
 				<h1 class="article-title">{{ArticleInfo.title}}</h1>
 				<!-- /文章标题 -->
@@ -22,24 +22,22 @@
 					<van-image class="avatar" slot="icon" round fit="cover" :src="ArticleInfo.aut_photo" />
 					<div slot="title" class="user-name">{{ArticleInfo.aut_name}}</div>
 					<div slot="label" class="publish-date">{{ArticleInfo.pubdate | getrelative}}</div>
-					<van-button class="follow-btn" type="info" color="#3296fa" round size="small" icon="plus">关注</van-button>
-					<!-- <van-button
-            class="follow-btn"
-            round
-            size="small"
-					>已关注</van-button>-->
+					<!-- <van-button class="follow-btn" type="info" color="#3296fa" round size="small" icon="plus">关注</van-button> -->
+					<FollowUser v-model="ArticleInfo.is_followed" :aut_id="ArticleInfo.aut_id"></FollowUser>
 				</van-cell>
 				<!-- /用户信息 -->
 
 				<!-- 文章内容 -->
-				<div class="article-content" v-html="ArticleInfo.content"></div>
+				<div ref="content" class="article-content markdown-body" v-html="ArticleInfo.content"></div>
 				<van-divider>正文结束</van-divider>
 				<!-- 底部区域 -->
 				<div class="article-bottom">
 					<van-button class="comment-btn" type="default" round size="small">写评论</van-button>
 					<van-icon name="comment-o" badge="123" color="#777" />
-					<van-icon color="#777" name="star-o" />
-					<van-icon color="#777" name="good-job-o" />
+					<!-- <van-icon color="#777" name="star-o" /> -->
+					<CollectArticle :is_collected.sync="ArticleInfo.is_collected" :art_id="ArticleInfo.art_id"></CollectArticle>
+					<!-- <van-icon color="#777" name="good-job-o" /> -->
+					<LikeArticle :attitude.sync="ArticleInfo.attitude" :art_id="ArticleInfo.art_id"></LikeArticle>
 					<van-icon name="share" color="#777777"></van-icon>
 				</div>
 				<!-- /底部区域 -->
@@ -47,14 +45,14 @@
 			<!-- /加载完成-文章详情 -->
 
 			<!-- 加载失败：404 -->
-			<div class="error-wrap">
+			<div class="error-wrap" v-if="isloadinding ===3">
 				<van-icon name="failure" />
 				<p class="text">该资源不存在或已删除！</p>
 			</div>
 			<!-- /加载失败：404 -->
 
 			<!-- 加载失败：其它未知错误（例如网络原因或服务端异常） -->
-			<div class="error-wrap">
+			<div class="error-wrap" v-if="isloadinding ===4">
 				<van-icon name="failure" />
 				<p class="text">内容加载失败！</p>
 				<van-button class="retry-btn">点击重试</van-button>
@@ -65,20 +63,15 @@
 </template>
 
 <script>
+	import { ImagePreview } from "vant";
 	import { getArticleInfoApi } from "@/api/article";
 	export default {
 		name: "ArticleIndex",
 		components: {},
-		props: {
-			// 使用props获取动态路由的数据
-			// articleId: {
-			// 	type: [Number, String],
-			// 	required: true,
-			// },
-		},
+		props: {},
 		data() {
 			return {
-				isloadinding: false,
+				isloadinding: 1,
 				article_id: this.$route.params.id,
 				ArticleInfo: {},
 			};
@@ -91,12 +84,36 @@
 		mounted() {},
 		methods: {
 			async getArticleInfo() {
+				this.isloadinding = 1;
 				try {
 					const { data } = await getArticleInfoApi(this.article_id);
 					console.log(data);
 					this.ArticleInfo = data.data;
+					this.isloadinding = 2;
+					this.$nextTick(() => {
+						const imgs = [...this.$refs.content.querySelectorAll("img")];
+						// console.log(imgs);
+						const imgSrcs = imgs.map((img) => img.src);
+						// console.log(imgSrcs);
+
+						//点击图片预览
+						imgs.forEach((img, index) => {
+							img.onclick = function () {
+								ImagePreview({
+									images: imgSrcs,
+									startPosition: index,
+								});
+							};
+						});
+					});
 				} catch (error) {
-					this.toast.fail("文章加载失败");
+					console.log(error);
+					// this.toast.fail("文章加载失败");
+					if (error.response && error.response.status === 404) {
+						this.isloadinding = 3;
+					} else {
+						this.isloadinding = 4;
+					}
 				}
 			},
 		},
@@ -104,6 +121,7 @@
 </script>
 
 <style scoped lang="less">
+	@import url("@/styles/github-markdown.css");
 	.article-container {
 		.van-nav-bar {
 			background-color: #3296fa;
