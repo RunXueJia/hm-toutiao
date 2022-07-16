@@ -36,14 +36,14 @@
 				this.isloadinding = true;
 				if (!this.$store.getters.token) return this.$toast.fail("先登录啊");
 				try {
-					if (this.attitude) {
+					if (this.attitude === 1) {
 						await ReLikeArticleApi(this.art_id);
 					} else {
 						await LikeArticleApi({
 							target: this.art_id,
 						});
 					}
-					this.$toast.success(this.attitude ? "取消点赞成功" : "感谢点赞");
+					this.$toast.success(this.attitude === 1 ? "取消点赞成功" : "感谢点赞");
 					this.$emit("update:attitude", this.attitude === 1 ? 0 : 1);
 				} catch (error) {
 					this.$toast.fail("关注状态更新失败");
