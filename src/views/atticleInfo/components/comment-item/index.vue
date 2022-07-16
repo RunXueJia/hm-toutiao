@@ -7,7 +7,7 @@
 				@click="LikeCommentFn"
 				class="like-btn"
 				:icon="comment.is_liking?'good-job': 'good-job-o'"
-			>赞</van-button>
+			>赞 ({{comment.like_count}})</van-button>
 		</div>
 
 		<div slot="label">
@@ -42,11 +42,14 @@
 					// console.log("ok");
 					if (this.comment.is_liking) {
 						const { data } = await ReLikeCommentApi(this.comment.com_id);
+						this.comment.like_count--;
 					} else {
 						// console.log(this.comment.com_id);
 						const { data } = await LikeCommentApi(this.comment.com_id);
+						this.comment.like_count++;
 					}
 					this.$toast.success(this.comment.is_liking ? "已取消点赞" : "点赞成功");
+
 					this.comment.is_liking = !this.comment.is_liking;
 				} catch (error) {
 					console.log(error);
