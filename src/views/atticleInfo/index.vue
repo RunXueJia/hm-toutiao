@@ -136,7 +136,7 @@
 				this.isloadinding = 1;
 				try {
 					const { data } = await getArticleInfoApi(this.article_id);
-					console.log(data);
+					// console.log(data);
 					this.ArticleInfo = data.data;
 					this.isloadinding = 2;
 					this.$nextTick(() => {

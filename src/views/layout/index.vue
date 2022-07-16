@@ -12,34 +12,16 @@
 </template>
 
 <script>
-	import { mapGetters, mapMutations } from "vuex";
-	import { getUserInfo } from "@/api/User";
-
 	export default {
 		name: "layout",
-		computed: {
-			...mapGetters(["token"]),
-		},
+		computed: {},
 		data() {
 			return {};
 		},
-		created() {
-			this.initData();
-		},
+		created() {},
 		mounted() {},
 
-		methods: {
-			...mapMutations(["setUser"]),
-			async initData() {
-				try {
-					await getUserInfo();
-					console.log("登录状态正常");
-				} catch (error) {
-					this.setUser({});
-					console.log("登录状态异常");
-				}
-			},
-		},
+		methods: {},
 	};
 </script>
 
