@@ -12,9 +12,13 @@
 </template>
 
 <script>
+	import { mapGetters } from "vuex";
+
 	export default {
 		name: "layout",
-		computed: {},
+		computed: {
+			...mapGetters(["token"]),
+		},
 		data() {
 			return {};
 		},
