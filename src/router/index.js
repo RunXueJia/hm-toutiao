@@ -53,6 +53,10 @@ const routes = [
     component: () => import('@/views/atticleInfo'),
   },
   {
+    path: '/my/edit',
+    component: () => import('@/views/edituser'),
+  },
+  {
     path: '/search',
     component: () => import('@/views/search'),
   }

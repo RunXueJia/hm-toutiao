@@ -18,7 +18,7 @@
 					<span class="name">{{userInfo.name}}</span>
 				</div>
 				<div class="right">
-					<van-button size="mini" round>编辑资料</van-button>
+					<van-button @click="$router.push('/my/edit')" size="mini" round>编辑资料</van-button>
 				</div>
 			</div>
 			<!-- 用户数据 -->
@@ -94,8 +94,8 @@
 					this.userInfo = data.data;
 				} catch (error) {
 					// console.log(error);
-					this.$toast.fail("登陆已过期,请重新登录");
-					this.setUser({});
+					// this.$toast.fail("登陆已过期,请重新登录");
+					// this.setUser({});
 				}
 			},
 			//退出
